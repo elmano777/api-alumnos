@@ -1,23 +1,36 @@
-import boto3  # import Boto3
-from boto3.dynamodb.conditions import Key  # import Boto3 conditions
+import boto3
+from boto3.dynamodb.conditions import Key
 
 def lambda_handler(event, context):
     # Entrada (json)
-    print(event)
-    tenant_id = event['body']['tenant_id']
+    tenant_id = event['queryStringParameters']['tenant_id']
+    alumno_id = event['pathParameters']['alumno_id']
+    
     # Proceso
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('t_alumnos')
-    response = table.query(
-        KeyConditionExpression=Key('tenant_id').eq(tenant_id)
+    
+    # Buscar el alumno específico
+    response = table.get_item(
+        Key={
+            'tenant_id': tenant_id,
+            'alumno_id': alumno_id
+        }
     )
-    items = response['Items']
-    num_reg = response['Count']
-    print(items)
+    
+    # Verificar si el alumno existe
+    if 'Item' in response:
+        alumno = response['Item']
+        mensaje = 'Alumno encontrado'
+        status = 200
+    else:
+        alumno = None
+        mensaje = 'Alumno no encontrado'
+        status = 404
+    
     # Salida (json)
     return {
-        'statusCode': 200,
-        'tenant_id':tenant_id,
-        'num_reg': num_reg,
-        'alumnos': items
+        'statusCode': status,
+        'message': mensaje,
+        'alumno': alumno
     }
