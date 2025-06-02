@@ -14,7 +14,7 @@ functions:
     events:
       - http:
           path: /alumnos
-          method: get
+          method: post
           cors: true
           integration: lambda
   crear:
