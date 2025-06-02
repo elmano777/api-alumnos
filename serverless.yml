@@ -17,6 +17,7 @@ functions:
           path: /alumnos/listar
           method: post
           cors: true
+          integration: lambda
 
   modificar:
     handler: ModificarAlumno.lambda_handler
@@ -25,6 +26,7 @@ functions:
           path: /alumnos/modificar
           method: post
           cors: true
+          integration: lambda
 
   eliminar:
     handler: EliminarAlumno.lambda_handler
@@ -33,6 +35,7 @@ functions:
           path: /alumnos/eliminar
           method: post
           cors: true
+          integration: lambda
 
   buscar:
     handler: BuscarAlumno.lambda_handler
@@ -41,4 +44,5 @@ functions:
           path: /alumnos/buscar
           method: post
           cors: true
+          integration: lambda
 
