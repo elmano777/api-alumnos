@@ -3,8 +3,18 @@ import boto3
 def lambda_handler(event, context):
     # Entrada (json)
     import json
+    print("Event:", event)  # Para debug
+    
     body = json.loads(event['body']) if isinstance(event['body'], str) else event['body']
     tenant_id = body['tenant_id']
+    
+    # Validar pathParameters
+    if not event.get('pathParameters') or not event['pathParameters'].get('alumno_id'):
+        return {
+            'statusCode': 400,
+            'message': 'alumno_id es requerido en la URL'
+        }
+    
     alumno_id = event['pathParameters']['alumno_id']
     
     # Proceso
