@@ -4,7 +4,7 @@ service: api-alumnos
 provider:
   name: aws
   runtime: python3.12
-  timeout: 30
+  timeout: 30  
   iam:
     role: arn:aws:iam::409362080365:role/LabRole
 
@@ -13,15 +13,15 @@ functions:
     handler: ListarAlumnos.lambda_handler
     events:
       - http:
-          path: /alumnos/listar
-          method: post
+          path: /alumnos
+          method: get
           cors: true
           integration: lambda
   crear:
     handler: CrearAlumno.lambda_handler
     events:
       - http:
-          path: /alumnos/crear
+          path: /alumnos
           method: post
           cors: true
           integration: lambda
@@ -29,23 +29,23 @@ functions:
     handler: ModificarAlumno.lambda_handler
     events:
       - http:
-          path: /alumnos/modificar
-          method: post
+          path: /alumnos/{alumno_id}
+          method: put
           cors: true
           integration: lambda
   eliminar:
     handler: EliminarAlumno.lambda_handler
     events:
       - http:
-          path: /alumnos/eliminar
-          method: post
+          path: /alumnos/{alumno_id}
+          method: delete
           cors: true
           integration: lambda
   buscar:
     handler: BuscarAlumno.lambda_handler
     events:
       - http:
-          path: /alumnos/buscar
-          method: post
+          path: /alumnos/{alumno_id}
+          method: get
           cors: true
           integration: lambda
