@@ -1,16 +1,27 @@
 import boto3
-from boto3.dynamodb.conditions import Key
+import json
 
 def lambda_handler(event, context):
-    # Entrada (json)
-    tenant_id = event['body']['tenant_id']
-    alumno_id = event['body']['alumno_id']
+    print("Evento:", json.dumps(event))
 
-    # Proceso
+    if not event.get('pathParameters') or not event['pathParameters'].get('alumno_id'):
+        return {
+            'statusCode': 400,
+            'message': 'alumno_id es requerido en la URL'
+        }
+
+    if not event.get('queryStringParameters') or not event['queryStringParameters'].get('tenant_id'):
+        return {
+            'statusCode': 400,
+            'message': 'tenant_id es requerido como query parameter'
+        }
+
+    alumno_id = event['pathParameters']['alumno_id']
+    tenant_id = event['queryStringParameters']['tenant_id']
+
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('t_alumnos')
 
-    # Buscar el alumno específico
     response = table.get_item(
         Key={
             'tenant_id': tenant_id,
@@ -18,17 +29,15 @@ def lambda_handler(event, context):
         }
     )
 
-    # Verificar si el alumno existe
     if 'Item' in response:
         alumno = response['Item']
-        mensaje = 'Alumno encontrado'
         status = 200
+        mensaje = 'Alumno encontrado'
     else:
         alumno = None
-        mensaje = 'Alumno no encontrado'
         status = 404
+        mensaje = 'Alumno no encontrado'
 
-    # Salida (json)
     return {
         'statusCode': status,
         'message': mensaje,
